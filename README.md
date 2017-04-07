@@ -11,6 +11,8 @@ docker pull frumpel/jekyll-3.0.2
 docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:4000 frumpel/jekyll-3.0.2:0.2
 ```
 
+Warning: because jekyll is now configured such that the destination directory is outside the source directory (even if in your filesystem they happen to be nested) jekyll will get into a regeneration loop where the changed files in the destination directory are the trigger for another run. To avoid this, please ensure that your _config.yml contains `exclude: ["_site"]`.
+
 Note: On CentOS7 networking may be borked and you may need to use --net=host but note that this may make it harder to get to the container from outside your VM
 
 ```
