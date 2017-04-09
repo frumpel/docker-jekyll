@@ -18,4 +18,4 @@ RUN apk update \
 EXPOSE 4000
  
 ENTRYPOINT ["jekyll"]
-CMD ["serve","-s","/jekyll-src","-d","/jekyll-dst","--watch"]
+CMD ["serve","-s","/jekyll-src","-d","/jekyll-dst","--watch","--host","0.0.0.0"]

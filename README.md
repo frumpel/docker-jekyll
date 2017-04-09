@@ -8,16 +8,18 @@ Use something like this:
 
 ```
 docker pull frumpel/jekyll-3.0.2
-docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:4000 frumpel/jekyll-3.0.2:0.2
+docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:4000 frumpel/jekyll-3.0.2:0.3
 ```
 
 Warning: because jekyll is now configured such that the destination directory is outside the source directory (even if in your filesystem they happen to be nested) jekyll will get into a regeneration loop where the changed files in the destination directory are the trigger for another run. To avoid this, please ensure that your _config.yml contains `exclude: ["_site"]`.
 
-Note: On CentOS7 networking may be borked and you may need to use --net=host but note that this may make it harder to get to the container from outside your VM
+Note: the default command string is
 
 ```
-docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:4000 --net=host frumpel/jekyll-3.0.2:0.2
+jekyll serve -s /jekyll-src -d /jekyll-dst --watch --host 0.0.0.0
 ```
+
+The last one is particularly important to ensure that you can connect to jekyll from outside the container. You can move this setting into your _config.yml as needed.
 
 # Detailed explanation:
 
@@ -34,7 +36,7 @@ docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:400
 
 The container will default to running `serve -s /jekyll-src -d /jekyll-dst --watch` so most of the time you should not have to do anything more:
 
-* `serve -s /jekyll-src -d /jekyll-dst --watch` - this will start a server on default port 4000, convert the contents of the "source" in /jekyll-src (=current working directory in this example) in the container to "destination" in /jekyll-dst (which is the _site subdirectory of the current working directory in this example), then watch for any changes and keep updating the destination as well as serving the new content.
+* `serve -s /jekyll-src -d /jekyll-dst --watch --host 0.0.0.0` - this will start a server on default port 4000 on all interfaces, convert the contents of the "source" in /jekyll-src (=current working directory in this example) in the container to "destination" in /jekyll-dst (which is the _site subdirectory of the current working directory in this example), then watch for any changes and keep updating the destination as well as serving the new content.
 
 If you want to override any commands you can simply override the jekyll command line parameters like this:
 
@@ -42,5 +44,11 @@ If you want to override any commands you can simply override the jekyll command 
 docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:4000 frumpel/jekyll-3.0.2:0.2 help
 ```
 
+# Creating the container from this definition
 
+Clone this repository, cd into it and use standard docker invocation:
+
+```
+docker build -t frumpel/jekyll-3.0.2:testing .
+```
 
