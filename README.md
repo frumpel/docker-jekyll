@@ -16,7 +16,7 @@ Warning: because jekyll is now configured such that the destination directory is
 Note: the default command string is
 
 ```
-jekyll serve -s /jekyll-src -d /jekyll-dst --watch --host 0.0.0.0
+jekyll serve -s /jekyll-src -d /jekyll-dst --force_polling --host 0.0.0.0
 ```
 
 The last one is particularly important to ensure that you can connect to jekyll from outside the container. You can move this setting into your _config.yml as needed.
@@ -36,7 +36,7 @@ docker run -it --rm -v $(pwd):/jekyll-src -v $(pwd)/_site:/jekyll-dst -p4000:400
 
 The container will default to running `serve -s /jekyll-src -d /jekyll-dst --watch` so most of the time you should not have to do anything more:
 
-* `serve -s /jekyll-src -d /jekyll-dst --watch --host 0.0.0.0` - this will start a server on default port 4000 on all interfaces, convert the contents of the "source" in /jekyll-src (=current working directory in this example) in the container to "destination" in /jekyll-dst (which is the _site subdirectory of the current working directory in this example), then watch for any changes and keep updating the destination as well as serving the new content.
+* `serve -s /jekyll-src -d /jekyll-dst --force_polling --host 0.0.0.0` - this will start a server on default port 4000 on all interfaces, convert the contents of the "source" in /jekyll-src (=current working directory in this example) in the container to "destination" in /jekyll-dst (which is the _site subdirectory of the current working directory in this example), then watch for any changes and keep updating the destination as well as serving the new content. Note that this is using `--force_polling` instead of `--watch` which seems to work better in containers running on VMs sharing an underlaying host filesystem.
 
 If you want to override any commands you can simply override the jekyll command line parameters like this:
 
